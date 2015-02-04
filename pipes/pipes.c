@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include<unistd.h>
 #include <sys/time.h>
 
 int main(int argc,char** argv){
@@ -26,14 +27,14 @@ int main(int argc,char** argv){
 			array[i]=i;
 		}
 
-		printf("Size = %d\n",sizeof(int)*atoi(argv[1]));
-
+		printf("Size = %lu\n",sizeof(int)*atoi(argv[1]));
+		
 		gettimeofday(&start,NULL);
 
 		close(fd1[0]);
 		//printf("Parent writing\n");
-		write(fd1[1],&array,sizeof(int)*atoi(argv[1]));	
-		close(fd1[1]);
+		write(fd1[1],array,sizeof(int)*atoi(argv[1]));	
+		//close(fd1[1]);
 
 		waitpid(ret,&status,0);
 		gettimeofday(&end,NULL);
@@ -44,8 +45,8 @@ int main(int argc,char** argv){
 	else{
 		close(fd1[1]);
 		//printf("Child reading\n");
-		read(fd1[0],&array,sizeof(int)*atoi(argv[1]));
-		close(fd1[0]);
+		read(fd1[0],array,sizeof(int)*atoi(argv[1]));
+		//close(fd1[0]);
 		
 		int i;
 		for(i=0;i<atoi(argv[1]);i++){
