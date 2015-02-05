@@ -7,18 +7,25 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <math.h>
-#include <time.h>
+#include <sys/time.h>
  
 #define MAXRCVLEN 500
 #define PORTNUM 8020
+
+struct message {
+  struct timeval sent_time;
+  char* data;
+};
  
 int main(int argc, char *argv[])
 {
+   //struct message m = (struct message*)malloc(sizeof(struct message));
+   struct message m;
    char buffer[MAXRCVLEN + 1]; /* +1 so we can add null terminator */
    int len, mysocket;
    struct sockaddr_in dest; 
-   struct timespec end, start;
- 
+   //struct timespec end, start;
+   struct timeval end;
    mysocket = socket(AF_INET, SOCK_STREAM, 0);
  
    memset(&dest, 0, sizeof(dest));                /* zero the struct */
@@ -28,20 +35,20 @@ int main(int argc, char *argv[])
  
    connect(mysocket, (struct sockaddr *)&dest, sizeof(struct sockaddr));
  
-   len = recv(mysocket, buffer, MAXRCVLEN, 0);
+   len = recv(mysocket, &m, MAXRCVLEN, 0);
 
-   clock_gettime(CLOCK_MONOTONIC,&end);
+   //clock_gettime(CLOCK_MONOTONIC,&end);
  
    /* We have to null terminate the received data ourselves */
-   buffer[len] = '\0';
+   //buffer[len] = '\0';
  
-   memcpy(&start,buffer,sizeof(start));
+   //memcpy(&start,buffer,sizeof(start));
 
-   printf("Received %s (%d bytes).\n", buffer, len);
- 
-   unsigned long long int diff = ((end.tv_sec - start.tv_sec)*pow(10,9)) + end.tv_nsec - start.tv_nsec;
+   printf("Received...\n");
+   gettimeofday(&end, NULL); 
+   unsigned long long int diff = ((end.tv_sec - (m.sent_time).tv_sec)*pow(10,6)) + end.tv_usec - (m.sent_time).tv_usec;
 
-   printf("Time diff = %lu\n",diff);
+   printf("Time diff in microseconds = %lu\n",diff);
 
    close(mysocket);
    return EXIT_SUCCESS;
