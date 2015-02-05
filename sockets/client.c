@@ -7,13 +7,14 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <math.h>
+#include<time.h>
 #include <sys/time.h>
  
 #define MAXRCVLEN 500
 //#define PORTNUM 8020
 
 struct message {
-  struct timeval sent_time;
+  struct timespec sent_time;
   char* msg;
 };
  
@@ -26,6 +27,7 @@ int main(int argc, char *argv[])
 	int mysocket;
 	unsigned long long int minTime = 100, len;
 	struct sockaddr_in dest; 
+	//struct timeval end;
 	struct timeval end;
 	mysocket = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -38,9 +40,10 @@ int main(int argc, char *argv[])
 
 	for (i = 0; i < 10; i++) {
 		len = recv(mysocket, &m, MAXRCVLEN, 0);
-		gettimeofday(&end, NULL); 
-		unsigned long long int diff = ((end.tv_sec - (m.sent_time).tv_sec)*pow(10,6)) + 
-			end.tv_usec - (m.sent_time).tv_usec;
+		//gettimeofday(&end, NULL); 
+		clock_gettime(CLOCK_MONOTONIC, &end);
+		unsigned long long int diff = ((end.tv_sec - (m.sent_time).tv_sec)*pow(10,9)) + 
+			end.tv_nsec - (m.sent_time).tv_nsec;
 		if (diff < minTime) { minTime = diff; } 
 	}
 	/* We have to null terminate the received data ourselves */

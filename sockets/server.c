@@ -7,11 +7,12 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/time.h>
+#include <time.h>
  
 //#define PORTNUM 8020
 
 struct message {
-  struct timeval sent_time;
+  struct timespec sent_time;
   char* msg; 
 };
  
@@ -41,7 +42,8 @@ int main(int argc, char *argv[])
 	listen(mysocket, 1);
 	int consocket = accept(mysocket, (struct sockaddr *)&dest, &socksize);	
         for (i = 0; i < 10; i++) {
-		gettimeofday(&m.sent_time, NULL);
+		//gettimeofday(&m.sent_time, NULL);
+		clock_gettime(CLOCK_MONOTONIC, &m.sent_time);
 		send(consocket, &m, len, 0);
 		sleep(1);
 	}
