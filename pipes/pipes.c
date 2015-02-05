@@ -27,8 +27,6 @@ int main(int argc,char** argv){
 			array[i]=i;
 		}
 
-		printf("Size = %lu\n",sizeof(int)*atoi(argv[1]));
-		
 		gettimeofday(&start,NULL);
 
 		close(fd1[0]);
@@ -46,12 +44,7 @@ int main(int argc,char** argv){
 		close(fd1[1]);
 		//printf("Child reading\n");
 		read(fd1[0],array,sizeof(int)*atoi(argv[1]));
-		//close(fd1[0]);
-		
-		int i;
-		for(i=0;i<atoi(argv[1]);i++){
-			printf("%d\n",array[i]);
-		}
+		//close(fd1[0]);	
 	}	
 
 	return 0;

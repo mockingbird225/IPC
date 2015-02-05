@@ -37,6 +37,7 @@ int main(int argc, char* argv[])
   	char* virt_add;
         int md, status;
 	struct timespec start;
+	char * temp = malloc(atoi(argv[3]));
 	
 	//long pg_size;
 	int bytes = atoi(argv[3]);
@@ -50,6 +51,7 @@ int main(int argc, char* argv[])
         }
         virt_add = (char*) mmap(0, bytes, PROT_WRITE, MAP_SHARED, md, 0);    
         sem_wait(my_semaphore);
+	memcpy(temp,virt_add,bytes);
 	clock_gettime(CLOCK_MONOTONIC_RAW,&start);
  	unsigned long long starttime = start.tv_sec*pow(10,9) + start.tv_nsec;
 	printf("  END: %llu\n",starttime);
